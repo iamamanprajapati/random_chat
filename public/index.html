@@ -1,0 +1,40 @@
+<!-- public/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Chat App</title>
+</head>
+<body>
+    <h1>Random Chat App</h1>
+
+    <form id="messageForm">
+        <input type="text" id="roomId" placeholder="Room ID" required>
+        <input type="text" id="message" placeholder="Message" required>
+        <button type="submit">Send Message</button>
+    </form>
+
+    <ul id="messages"></ul>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        document.getElementById('messageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var roomId = document.getElementById('roomId').value;
+            var message = document.getElementById('message').value;
+            socket.emit('chat message', message, roomId);
+            document.getElementById('message').value = '';
+        });
+
+        socket.on('chat message', function(msg) {
+            var item = document.createElement('li');
+            item.textContent = msg;
+            document.getElementById('messages').appendChild(item);
+        });
+    </script>
+</body>
+</html>
